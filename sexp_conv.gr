@@ -14,8 +14,39 @@ export let ofSexpError = (conv, what, sexp) =>
   throw OfSexpError(String.concat(String.concat(conv, ": "), what), sexp)
 
 export let sexpOfVoid = v => Sexp.List([])
-
 export let sexpOfBool = b => Sexp.Atom(toString(b))
+export let sexpOfString = s => Sexp.Atom(s)
+export let sexpOfBytes = bytes => Sexp.Atom(Bytes.toString(bytes))
+export let sexpOfChar = c => Sexp.Atom(toString(c))
+export let sexpOfNumber = n => Sexp.Atom(toString(n))
+
+export let sexpOfOption = (sexpOfA, option) =>
+  match (option) {
+    Some(x) => Sexp.List([Sexp.Atom("some"), sexpOfA(x)]),
+    None => Sexp.Atom("none"),
+  }
+
+export let sexpOfResult = (sexpOfA, sexpOfB, result) =>
+  match (result) {
+    Ok(x) => Sexp.List([Sexp.Atom("ok"), sexpOfA(x)]),
+    Err(err) => Sexp.List([Sexp.Atom("error"), sexpOfB(err)]),
+  }
+
+export let sexpOfPair = (sexpOfA, sexpOfB, pair) =>
+  match (pair) { (a, b) => Sexp.List([sexpOfA(a), sexpOfB(b)]) }
+
+export let sexpOfTriple = (sexpOfA, sexpOfB, sexpOfC, triple) =>
+  match (triple) {
+    (a, b, c) => Sexp.List([sexpOfA(a), sexpOfB(b), sexpOfC(c)]),
+  }
+
+export let sexpOfList = (sexpOfA, lst) =>
+  Sexp.List(List.reverse(ListUtil.revMap(sexpOfA, lst)))
+
+export let sexpOfMap = (sexpOfKey, sexpOfVal, map) => {
+  let coll = (k, v, acc) => [Sexp.List([sexpOfKey(k), sexpOfVal(v)]), ...acc]
+  Sexp.List(Map.reduce(coll, [], map))
+}
 
 export let voidOfSexp = sexp => {
   match (sexp) {
