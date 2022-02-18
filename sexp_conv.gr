@@ -15,10 +15,11 @@ export let ofSexpError = (conv, what, sexp) =>
 
 export let sexpOfVoid = v => Sexp.List([])
 export let sexpOfBool = b => Sexp.Atom(toString(b))
+export let sexpOfInt = n => Sexp.Atom(toString(n))
+export let sexpOfFloat = f => Sexp.Atom(toString(f))
 export let sexpOfString = s => Sexp.Atom(s)
 export let sexpOfBytes = bytes => Sexp.Atom(Bytes.toString(bytes))
 export let sexpOfChar = c => Sexp.Atom(toString(c))
-export let sexpOfNumber = n => Sexp.Atom(toString(n))
 
 export let sexpOfOption = (sexpOfA, option) =>
   match (option) {
