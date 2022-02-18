@@ -33,13 +33,11 @@ export let sexpOfResult = (sexpOfA, sexpOfB, result) =>
     Err(err) => Sexp.List([Sexp.Atom("error"), sexpOfB(err)]),
   }
 
-export let sexpOfPair = (sexpOfA, sexpOfB, pair) =>
-  match (pair) { (a, b) => Sexp.List([sexpOfA(a), sexpOfB(b)]) }
+export let sexpOfPair = (sexpOfA, sexpOfB, (a, b)) =>
+  Sexp.List([sexpOfA(a), sexpOfB(b)])
 
-export let sexpOfTriple = (sexpOfA, sexpOfB, sexpOfC, triple) =>
-  match (triple) {
-    (a, b, c) => Sexp.List([sexpOfA(a), sexpOfB(b), sexpOfC(c)]),
-  }
+export let sexpOfTriple = (sexpOfA, sexpOfB, sexpOfC, (a, b, c)) =>
+  Sexp.List([sexpOfA(a), sexpOfB(b), sexpOfC(c)])
 
 export let sexpOfList = (sexpOfA, lst) =>
   Sexp.List(List.reverse(ListUtil.revMap(sexpOfA, lst)))
