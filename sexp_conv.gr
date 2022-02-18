@@ -83,6 +83,18 @@ export let intOfSexp = sexp =>
     Sexp.List(_) => ofSexpError("intOfSexp", "atom needed", sexp),
   }
 
+export let charOfSexp = sexp =>
+  match (sexp) {
+    Sexp.Atom(s) when String.length(s) == 1 => String.charAt(0, s),
+    Sexp.Atom(_) =>
+      ofSexpError(
+        "charOfSexp",
+        "atom string must contain one character only",
+        sexp
+      ),
+    Sexp.List(_) => ofSexpError("char_of_sexp", "atom needed", sexp),
+  }
+
 export let optionOfSexp = (aOfSexp, sexp) =>
   match (sexp) {
     Sexp.Atom(s) when s == "none" || s == "None" => None,
