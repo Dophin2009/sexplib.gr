@@ -47,37 +47,33 @@ export let sexpOfMap = (sexpOfKey, sexpOfVal, map) => {
   Sexp.List(Map.reduce(coll, [], map))
 }
 
-export let voidOfSexp = sexp => {
+export let voidOfSexp = sexp =>
   match (sexp) {
     Sexp.List([]) => void,
     _ => ofSexpError("voidOfSexp", "empty list needed", sexp),
   }
-}
 
-export let boolOfSexp = sexp => {
+export let boolOfSexp = sexp =>
   match (sexp) {
     Sexp.Atom(s) when s == "true" || s == "True" => true,
     Sexp.Atom(s) when s == "false" || s == "False" => false,
     Sexp.Atom(_) => ofSexpError("boolOfSexp", "unknown string", sexp),
     Sexp.List(_) => ofSexpError("boolOfSexp", "atom needed", sexp),
   }
-}
 
-export let stringOfSexp = sexp => {
+export let stringOfSexp = sexp =>
   match (sexp) {
     Sexp.Atom(s) => s,
     Sexp.List(_) => ofSexpError("stringOfSexp", "atom needed", sexp),
   }
-}
 
-export let bytesOfSexp = sexp => {
+export let bytesOfSexp = sexp =>
   match (sexp) {
     Sexp.Atom(s) => Bytes.fromString(s),
     Sexp.List(_) => ofSexpError("bytesOfSexp", "atom needed", sexp),
   }
-}
 
-export let intOfSexp = sexp => {
+export let intOfSexp = sexp =>
   match (sexp) {
     Sexp.Atom(s) =>
       match (Number.parseInt(s, 10)) {
@@ -86,9 +82,8 @@ export let intOfSexp = sexp => {
       },
     Sexp.List(_) => ofSexpError("intOfSexp", "atom needed", sexp),
   }
-}
 
-export let optionOfSexp = (aOfSexp, sexp) => {
+export let optionOfSexp = (aOfSexp, sexp) =>
   match (sexp) {
     Sexp.Atom(s) when s == "none" || s == "None" => None,
     Sexp.List([el]) => Some(aOfSexp(el)),
@@ -97,9 +92,8 @@ export let optionOfSexp = (aOfSexp, sexp) => {
     Sexp.Atom(_) => ofSexpError("optionOfSexp", "only none can be atom", sexp),
     Sexp.List(_) => ofSexpError("optionOfSexp", "list must be (some el)", sexp),
   }
-}
 
-export let resultOfSexp = (aOfSexp, bOfSexp, sexp) => {
+export let resultOfSexp = (aOfSexp, bOfSexp, sexp) =>
   match (sexp) {
     Sexp.List([Sexp.Atom(s), el]) when s == "ok" || s == "Ok" =>
       Ok(aOfSexp(el)),
@@ -109,9 +103,8 @@ export let resultOfSexp = (aOfSexp, bOfSexp, sexp) => {
       ofSexpError("resultOfSexp", "list must be (ok el) or (error el)", sexp),
     Sexp.Atom(_) => ofSexpError("resultOfSexp", "list needed", sexp),
   }
-}
 
-export let pairOfSexp = (aOfSexp, bOfSexp, sexp) => {
+export let pairOfSexp = (aOfSexp, bOfSexp, sexp) =>
   match (sexp) {
     Sexp.List([aSexp, bSexp]) => (aOfSexp(aSexp), bOfSexp(bSexp)),
     Sexp.List(_) =>
@@ -122,9 +115,8 @@ export let pairOfSexp = (aOfSexp, bOfSexp, sexp) => {
       ),
     _ => ofSexpError("pairOfSexp", "list needed", sexp),
   }
-}
 
-export let tripleOfSexp = (aOfSexp, bOfSexp, cOfSexp, sexp) => {
+export let tripleOfSexp = (aOfSexp, bOfSexp, cOfSexp, sexp) =>
   match (sexp) {
     Sexp.List([aSexp, bSexp, cSexp]) =>
       (aOfSexp(aSexp), bOfSexp(bSexp), cOfSexp(cSexp)),
@@ -136,16 +128,14 @@ export let tripleOfSexp = (aOfSexp, bOfSexp, cOfSexp, sexp) => {
       ),
     _ => ofSexpError("pairOfSexp", "list needed", sexp),
   }
-}
 
-export let listOfSexp = (aOfSexp, sexp) => {
+export let listOfSexp = (aOfSexp, sexp) =>
   match (sexp) {
     Sexp.List(lst) => ListUtil.revMap(aOfSexp, lst),
     _ => ofSexpError("listOfSexp", "list needed", sexp),
   }
-}
 
-export let mapOfSexp = (keyOfSexp, valOfSexp, sexp) => {
+export let mapOfSexp = (keyOfSexp, valOfSexp, sexp) =>
   match (sexp) {
     Sexp.List(lst) => {
       let map = Map.make()
@@ -162,4 +152,3 @@ export let mapOfSexp = (keyOfSexp, valOfSexp, sexp) => {
     },
     Sexp.Atom(_) => ofSexpError("mapOfSexp", "list needed", sexp),
   }
-}
